@@ -19,8 +19,8 @@ public class DaoPegawai {
 		conn = new Koneksi().getKoneksi();
 	}
 	
-	public String insertPegawai(ModelPegawai pegawai){
-		String res = "";
+	public int insertPegawai(ModelPegawai pegawai){
+		int res = 0;
 		query = "INSERT INTO `db_pegawai`.`tb_pegawai` (`nama`, `jenis_kelamin`, `alamat`) VALUES (?,?,?);";
 		try {
 			PreparedStatement ps = (PreparedStatement) conn.prepareStatement(query);
@@ -30,17 +30,17 @@ public class DaoPegawai {
 			
 			ps.execute();
 			ps.close();
-			res = "Data berhasil disimpan";
+			res = 1;
 			conn.close();
 		} catch (SQLException e) {
-			res = "Terjadi kesalahan : "+e;
+			res = 0;
 			e.printStackTrace();
 		}
 		return res;
 	}
 	
-	public String updatePegawai(ModelPegawai pegawai){
-		String res = "";
+	public int updatePegawai(ModelPegawai pegawai){
+		int res = 0;
 		query = "UPDATE `db_pegawai`.`tb_pegawai` SET `nama`=?, `jenis_kelamin`=?, `alamat`=? WHERE `idpegawai`=?;";
 		try {
 			PreparedStatement ps = (PreparedStatement) conn.prepareStatement(query);
@@ -51,27 +51,27 @@ public class DaoPegawai {
 			
 			ps.execute();
 			ps.close();
-			res = "Data berhasil diupdate";
+			res = 1;
 			conn.close();
 		} catch (SQLException e) {
-			res = "Terjadi Kesalahan : "+e;
+			res = 0;
 			e.printStackTrace();
 		}
 		return res;
 	}
 	
-	public String deletePegawai(int id){
-		String res = "";
+	public int deletePegawai(int id){
+		int res = 0;
 		query = "DELETE FROM `db_pegawai`.`tb_pegawai` WHERE `idpegawai`=?;";
 		try {
 			PreparedStatement ps = (PreparedStatement) conn.prepareStatement(query);
 			ps.setInt(1, id);
 			ps.execute();
 			ps.close();
-			res = "Data berhasil dihapus";
+			res = 1;
 			conn.close();
 		} catch (SQLException e) {
-			res = "Terjadi kesalahan : "+e;
+			res = 0;
 			e.printStackTrace();
 		}
 		return res;
