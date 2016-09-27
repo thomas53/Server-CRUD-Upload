@@ -1,5 +1,12 @@
 package com.dao;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.config.Koneksi;
+import com.model.ModelFile;
 import com.model.ModelPegawai;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
@@ -21,13 +29,13 @@ public class DaoPegawai {
 	
 	public int insertPegawai(ModelPegawai pegawai){
 		int res = 0;
-		query = "INSERT INTO `db_pegawai`.`tb_pegawai` (`nama`, `jenis_kelamin`, `alamat`) VALUES (?,?,?);";
+		query = "INSERT INTO `db_pegawai`.`tb_pegawai` (`nama`, `jenis_kelamin`, `alamat`,foto) VALUES (?,?,?,?);";
 		try {
 			PreparedStatement ps = (PreparedStatement) conn.prepareStatement(query);
 			ps.setString(1, pegawai.getNama());
-			ps.setString(2, pegawai.getJenkel());
+			ps.setString(2, pegawai.getJenis_kelamin());
 			ps.setString(3, pegawai.getAlamat());
-			
+			ps.setString(4, pegawai.getFileFoto());
 			ps.execute();
 			ps.close();
 			res = 1;
@@ -45,9 +53,9 @@ public class DaoPegawai {
 		try {
 			PreparedStatement ps = (PreparedStatement) conn.prepareStatement(query);
 			ps.setString(1, pegawai.getNama());
-			ps.setString(2, pegawai.getJenkel());
+			ps.setString(2, pegawai.getJenis_kelamin());
 			ps.setString(3, pegawai.getAlamat());
-			ps.setInt(4, pegawai.getIdPegawai());
+			ps.setInt(4, pegawai.getIdpegawai());
 			
 			ps.execute();
 			ps.close();
@@ -79,16 +87,17 @@ public class DaoPegawai {
 	
 	public List<ModelPegawai> ambilPegawai(){
 		List<ModelPegawai> res = new ArrayList<ModelPegawai>();
-		query = "SELECT idpegawai,nama,jenis_kelamin,alamat FROM tb_pegawai";
+		query = "SELECT idpegawai,nama,jenis_kelamin,alamat,foto FROM tb_pegawai";
 		try {
 			Statement st = (Statement) conn.createStatement();
 			ResultSet rs = st.executeQuery(query);			
 			while(rs.next()){
 				ModelPegawai temp = new ModelPegawai();
-				temp.setIdPegawai(rs.getInt("idpegawai"));
+				temp.setIdpegawai(rs.getInt("idpegawai"));
 				temp.setNama(rs.getString("nama"));
-				temp.setJenkel(rs.getString("jenis_kelamin"));
+				temp.setJenis_kelamin(rs.getString("jenis_kelamin"));
 				temp.setAlamat(rs.getString("alamat"));
+				temp.setFileFoto(rs.getString("foto"));
 				res.add(temp);
 			}
 		} catch (SQLException e) {
@@ -106,9 +115,9 @@ public class DaoPegawai {
 			ResultSet rs = st.executeQuery(query);
 			
 			if(rs.next()){
-				res.setIdPegawai(rs.getInt("idpegawai"));
+				res.setIdpegawai(rs.getInt("idpegawai"));
 				res.setNama(rs.getString("nama"));
-				res.setJenkel(rs.getString("jenis_kelamin"));
+				res.setJenis_kelamin(rs.getString("jenis_kelamin"));
 				res.setAlamat(rs.getString("alamat"));				
 			}
 		} catch (SQLException e) {
@@ -118,4 +127,11 @@ public class DaoPegawai {
 		return res;
 	}
 	
+	public void saveFile(String fileName, byte[] content) throws IOException{
+		File file = new File(fileName);
+        BufferedOutputStream writer = new BufferedOutputStream(new FileOutputStream(file));
+        writer.write(content);
+        writer.flush();
+        writer.close();
+	}
 }
