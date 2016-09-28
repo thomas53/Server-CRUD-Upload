@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import com.dao.DaoGolongan;
 import com.dao.DaoPegawai;
 import com.model.ModelFile;
 import com.model.ModelPegawai;
@@ -42,12 +43,13 @@ public class Pegawai extends Thread{
 				ModelPegawai pegawai = null;
 				ModelFile modelFile = null;
 				
-				if(!act.equals("get")){
+				if(!act.equals("get") && !act.equals("get_gol")){
 					// Recive data
 					in = new ObjectInputStream(server.getInputStream());
 					pegawai = (ModelPegawai) in.readObject();
 				}
 				DaoPegawai daoPegawai = new DaoPegawai();
+				DaoGolongan daoGolongan = new DaoGolongan();
 				
 				// pilih aksi
 				ObjectOutputStream out = new ObjectOutputStream(server.getOutputStream());
@@ -61,6 +63,8 @@ public class Pegawai extends Thread{
 					out.writeObject(daoPegawai.ambilPegawai());
 				}else if(act.equals("getId")){
 					out.writeObject(daoPegawai.ambilPegawayById(pegawai.getIdpegawai()));
+				}else if(act.equals("get_gol")){
+					out.writeObject(daoGolongan.ambilDaftarGolongan());
 				}
 				
 				
